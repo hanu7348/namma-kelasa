@@ -1,0 +1,31 @@
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+main,
+.hero-grid,
+.hero-copy,
+.hero-search,
+.search-field {
+  min-width: 0;
+  max-width: 100%;
+}
+
+@media (max-width: 600px) {
+  .hero-copy > p,
+  .section-head,
+  .category-card {
+    overflow-wrap: anywhere;
+  }
+
+  .hero-search {
+    width: 100%;
+  }
+
+  .nav-toggle {
+    color: #15213b;
+    flex: 0 0 auto;
+  }
+}

@@ -1,0 +1,3 @@
+{% extends 'base.html' %}
+{% block title %}Company profile — {{ ui.brand }}{% endblock %}
+{% block content %}<section class="page-hero compact"><div class="container narrow"><span class="eyebrow">Employer</span><h1>Company profile</h1><p>ಸರಿಯಾದ ಮಾಹಿತಿ verification ಪ್ರಕ್ರಿಯೆಯನ್ನು ವೇಗಗೊಳಿಸುತ್ತದೆ.</p></div></section><section class="section"><div class="container narrow"><form class="content-card form-card" method="post">{% csrf_token %}{% include 'partials/form_fields.html' %}<button class="btn btn-primary" type="submit">Save profile</button></form></div></section>{% endblock %}

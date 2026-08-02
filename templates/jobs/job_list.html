@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}{{ ui.jobs }} — {{ ui.brand }}{% endblock %}
+{% block content %}
+<section class="page-hero compact"><div class="container"><span class="eyebrow">ಕರ್ನಾಟಕದ ಉದ್ಯೋಗಗಳು</span><h1>ನಿಮ್ಮ ಮುಂದಿನ ಅವಕಾಶ ಹುಡುಕಿ</h1><p>ಸ್ಪಷ್ಟ ಸಂಬಳ ಮತ್ತು ನಿಖರ ಸ್ಥಳದೊಂದಿಗೆ ಪರಿಶೀಲಿತ ಉದ್ಯೋಗಗಳು.</p></div></section>
+<section class="section"><div class="container listing-layout">
+  <aside class="filter-card">
+    <h3>ಉದ್ಯೋಗ ಹುಡುಕಿ</h3>
+    <form method="get">
+      <label>Keyword</label><input class="form-control" name="q" value="{{ request.GET.q }}" placeholder="Job title">
+      <label>City / Area</label><input class="form-control" name="city" value="{{ request.GET.city }}" placeholder="Mysuru">
+      <label>Category</label><select class="form-control" name="category"><option value="">All categories</option>{% for category in categories %}<option value="{{ category.slug }}" {% if request.GET.category == category.slug %}selected{% endif %}>{% if lang == 'kn' %}{{ category.name_kn }}{% else %}{{ category.name_en }}{% endif %}</option>{% endfor %}</select>
+      <label>Job type</label>{{ search_form.job_type }}
+      <button class="btn btn-primary btn-block" type="submit">{{ ui.search }}</button><a class="clear-filter" href="{% url 'jobs:list' %}">Clear filters</a>
+    </form>
+  </aside>
+  <div><div class="results-head"><b>{{ page.paginator.count }} ಉದ್ಯೋಗಗಳು</b><span>ಇತ್ತೀಚಿನವು ಮೊದಲು</span></div><div class="job-grid single">{% for job in page %}{% include 'partials/job_card.html' %}{% empty %}<div class="empty-state"><span>🔎</span><h3>ಉದ್ಯೋಗ ಸಿಗಲಿಲ್ಲ</h3><p>ಬೇರೆ keyword ಅಥವಾ city ಪ್ರಯತ್ನಿಸಿ.</p></div>{% endfor %}</div>
+    {% if page.has_other_pages %}<nav class="pagination">{% if page.has_previous %}<a href="?page={{ page.previous_page_number }}&q={{ request.GET.q|urlencode }}&city={{ request.GET.city|urlencode }}">←</a>{% endif %}<span>Page {{ page.number }} of {{ page.paginator.num_pages }}</span>{% if page.has_next %}<a href="?page={{ page.next_page_number }}&q={{ request.GET.q|urlencode }}&city={{ request.GET.city|urlencode }}">→</a>{% endif %}</nav>{% endif %}
+  </div>
+</div></section>
+{% endblock %}

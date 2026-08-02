@@ -1,0 +1,73 @@
+{% load static %}
+<!doctype html>
+<html lang="{{ lang }}" data-bs-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ಕರ್ನಾಟಕದ ಪರಿಶೀಲಿತ ಸ್ಥಳೀಯ ಉದ್ಯೋಗಗಳು – Namma Kelasa">
+  <meta name="theme-color" content="#5b5cf0">
+  <title>{% block title %}{{ ui.brand }}{% endblock %}</title>
+  <script>
+    (()=>{const saved=localStorage.getItem('nk-theme');const theme=saved||((window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light');document.documentElement.setAttribute('data-bs-theme',theme)})();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Kannada:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'vendor/bootstrap/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'vendor/bootstrap-icons/bootstrap-icons.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/tailwind.generated.css' %}">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  <link rel="stylesheet" href="{% static 'css/fixes.css' %}">
+  <link rel="stylesheet" href="{% static 'css/advanced.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body id="app-shell">
+  <div class="ambient-orb ambient-orb-one" aria-hidden="true"></div>
+  <div class="ambient-orb ambient-orb-two" aria-hidden="true"></div>
+  <header class="site-header premium-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="{% url 'jobs:home' %}" aria-label="Namma Kelasa home">
+        <span class="brand-mark"><span>ನ</span></span>
+        <span class="brand-copy"><b>{{ ui.brand }}</b><small>WORK · GROW · BELONG</small></span>
+      </a>
+      <nav class="nav-links d-none d-lg-flex" aria-label="Primary navigation">
+        <a href="{% url 'jobs:list' %}">{{ ui.jobs }}</a>
+        <a href="{% url 'jobs:plans' %}">{{ ui.plans }}</a>
+        {% if user.is_authenticated %}<a href="{% url 'jobs:dashboard' %}">{{ ui.dashboard }}</a>{% endif %}
+      </nav>
+      <div class="nav-actions">
+        <button class="icon-button" type="button" data-theme-toggle aria-label="Toggle light and dark theme"><i class="bi bi-moon-stars" data-theme-icon></i></button>
+        <a class="lang-switch d-none d-sm-inline-flex" href="{% url 'jobs:set_language' other_lang %}?next={{ request.path|urlencode }}">{% if lang == 'kn' %}EN{% else %}ಕನ್ನಡ{% endif %}</a>
+        {% if user.is_authenticated %}
+          {% if user.role == 'employer' %}<a class="btn btn-small btn-primary d-none d-md-inline-flex" href="{% url 'jobs:create' %}"><i class="bi bi-plus-lg"></i> {{ ui.post_job }}</a>{% endif %}
+          <form action="{% url 'accounts:logout' %}" method="post" class="inline-form d-none d-lg-inline">{% csrf_token %}<button class="nav-button" type="submit">{{ ui.logout }}</button></form>
+        {% else %}<a class="btn btn-small btn-primary d-none d-sm-inline-flex" href="{% url 'accounts:request_otp' %}"><i class="bi bi-envelope-check"></i> {{ ui.login }}</a>{% endif %}
+        <button class="icon-button d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu" aria-label="Open navigation"><i class="bi bi-list"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="offcanvas offcanvas-end premium-offcanvas" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
+    <div class="offcanvas-header"><h5 id="mobileMenuLabel">{{ ui.brand }}</h5><button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button></div>
+    <div class="offcanvas-body"><nav class="mobile-nav"><a href="{% url 'jobs:list' %}"><i class="bi bi-briefcase"></i>{{ ui.jobs }}</a><a href="{% url 'jobs:plans' %}"><i class="bi bi-stars"></i>{{ ui.plans }}</a>{% if user.is_authenticated %}<a href="{% url 'jobs:dashboard' %}"><i class="bi bi-grid"></i>{{ ui.dashboard }}</a>{% if user.role == 'employer' %}<a href="{% url 'jobs:create' %}"><i class="bi bi-plus-circle"></i>{{ ui.post_job }}</a>{% endif %}<form action="{% url 'accounts:logout' %}" method="post">{% csrf_token %}<button type="submit"><i class="bi bi-box-arrow-right"></i>{{ ui.logout }}</button></form>{% else %}<a href="{% url 'accounts:request_otp' %}"><i class="bi bi-envelope-check"></i>{{ ui.login }}</a>{% endif %}<a href="{% url 'jobs:set_language' other_lang %}?next={{ request.path|urlencode }}"><i class="bi bi-translate"></i>{% if lang == 'kn' %}English{% else %}ಕನ್ನಡ{% endif %}</a></nav></div>
+  </div>
+
+  {% if messages %}<div class="container messages" aria-live="polite">{% for message in messages %}<div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">{{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>{% endfor %}</div>{% endif %}
+
+  <main>{% block content %}{% endblock %}</main>
+
+  <footer class="site-footer premium-footer">
+    <div class="container footer-grid">
+      <div><a class="brand footer-brand" href="{% url 'jobs:home' %}"><span class="brand-mark"><span>ನ</span></span><span class="brand-copy"><b>{{ ui.brand }}</b><small>LOCAL OPPORTUNITY NETWORK</small></span></a><p>ಕರ್ನಾಟಕದ ಜನರಿಗೆ ಸರಳ, ಸುರಕ್ಷಿತ ಮತ್ತು ಆಧುನಿಕ ಸ್ಥಳೀಯ ಉದ್ಯೋಗ ವೇದಿಕೆ.</p><div class="footer-social"><a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a><a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a><a href="#" aria-label="YouTube"><i class="bi bi-youtube"></i></a></div></div>
+      <div><h4>ವೇದಿಕೆ</h4><a href="{% url 'jobs:list' %}">{{ ui.jobs }}</a><a href="{% url 'jobs:plans' %}">{{ ui.plans }}</a><a href="{% url 'jobs:static_page' 'safety' %}">ಸುರಕ್ಷತೆ</a></div>
+      <div><h4>ಕಂಪನಿ</h4><a href="{% url 'jobs:static_page' 'about' %}">ನಮ್ಮ ಬಗ್ಗೆ</a><a href="{% url 'jobs:static_page' 'contact' %}">ಸಂಪರ್ಕ</a><a href="{% url 'jobs:static_page' 'privacy' %}">ಗೌಪ್ಯತೆ</a></div>
+    </div>
+    <div class="container footer-bottom"><span>© {% now 'Y' %} Namma Kelasa</span><span>ಸ್ವತಂತ್ರ platform · ನಾವು ಸರ್ಕಾರಿ ವೆಬ್‌ಸೈಟ್ ಅಲ್ಲ.</span></div>
+  </footer>
+  <script src="{% static 'vendor/bootstrap/bootstrap.bundle.min.js' %}"></script>
+  <script>
+    (()=>{const root=document.documentElement;const buttons=document.querySelectorAll('[data-theme-toggle]');const apply=(theme)=>{root.setAttribute('data-bs-theme',theme);localStorage.setItem('nk-theme',theme);document.querySelectorAll('[data-theme-icon]').forEach(i=>{i.className=theme==='dark'?'bi bi-sun':'bi bi-moon-stars'})};buttons.forEach(b=>b.addEventListener('click',()=>apply(root.getAttribute('data-bs-theme')==='dark'?'light':'dark')));apply(root.getAttribute('data-bs-theme')||'light')})();
+  </script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

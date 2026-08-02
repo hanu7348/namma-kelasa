@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}{% if lang == 'kn' %}{{ job.title_kn }}{% else %}{{ job.title_en }}{% endif %} — {{ ui.brand }}{% endblock %}
+{% block content %}
+<section class="page-hero job-detail-hero"><div class="container"><a class="back-link" href="{% url 'jobs:list' %}">← ಎಲ್ಲಾ ಉದ್ಯೋಗಗಳು</a><div class="detail-title"><div class="company-logo large">{{ job.employer.company_name|first|upper }}</div><div><div class="badges">{% if job.is_urgent %}<span class="badge badge-warm">{{ ui.urgent }}</span>{% endif %}{% if job.employer.is_verified %}<span class="badge badge-green">✓ {{ ui.verified }}</span>{% endif %}</div><h1>{% if lang == 'kn' %}{{ job.title_kn }}{% else %}{{ job.title_en }}{% endif %}</h1><p>{{ job.employer.company_name }} · {{ job.location }}</p></div></div></div></section>
+<section class="section"><div class="container detail-layout">
+  <article class="content-card">
+    <div class="quick-facts"><div><span>₹</span><small>{{ ui.salary }}</small><b>₹{{ job.salary_min }}–₹{{ job.salary_max }}</b></div><div><span>⌖</span><small>{{ ui.location }}</small><b>{{ job.location }}</b></div><div><span>◷</span><small>Job type</small><b>{{ job.get_job_type_display }}</b></div><div><span>♟</span><small>Vacancies</small><b>{{ job.vacancies }}</b></div></div>
+    <div class="prose"><h2>ಉದ್ಯೋಗದ ವಿವರ</h2><p>{% if lang == 'kn' %}{{ job.description_kn|linebreaksbr }}{% else %}{{ job.description_en|linebreaksbr }}{% endif %}</p>{% if job.requirements %}<h2>ಅರ್ಹತೆ / Requirements</h2><p>{{ job.requirements|linebreaksbr }}</p>{% endif %}<h2>ಕೆಲಸದ ಸ್ಥಳ</h2><p>{{ job.address|default:job.location }}</p></div>
+  </article>
+  <aside><div class="apply-card"><span class="posted">{{ job.created_at|timesince }} ago posted</span>{% if already_applied %}<div class="success-box">✓ ನೀವು ಅರ್ಜಿ ಸಲ್ಲಿಸಿದ್ದೀರಿ</div>{% elif job.is_open %}<a class="btn btn-primary btn-block btn-large" href="{% url 'jobs:apply' job.public_id %}">{{ ui.apply }}</a>{% else %}<button class="btn btn-disabled btn-block" disabled>Job closed</button>{% endif %}<p>ಅಭ್ಯರ್ಥಿಗಳಿಗೆ ಅರ್ಜಿ ಸಂಪೂರ್ಣ ಉಚಿತ.</p></div><div class="employer-card"><h3>Employer</h3><b>{{ job.employer.company_name }}</b><p>{{ job.employer.city }}</p>{% if job.employer.is_verified %}<div class="verified-line">✓ Identity verified</div>{% endif %}</div><a class="report-link" href="{% url 'jobs:report' job.public_id %}">⚑ {{ ui.report }}</a></aside>
+</div></section>
+{% endblock %}

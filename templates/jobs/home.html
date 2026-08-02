@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ ui.brand }} — ಕರ್ನಾಟಕದ ಸ್ಥಳೀಯ ಉದ್ಯೋಗಗಳು{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* Homepage critical CSS: intentionally embedded after Bootstrap and shared CSS. */
+  body#app-shell { font-family: "Plus Jakarta Sans", "Noto Sans Kannada", system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .nk-home { --nk-primary:#5457e8; --nk-primary-dark:#3d40c9; --nk-teal:#0ca88d; --nk-ink:#11162b; --nk-muted:#667085; --nk-line:#e7e9f2; --nk-card:#fff; --nk-soft:#f6f7fb; color:var(--nk-ink); background:var(--nk-soft); }
+  [data-bs-theme="dark"] .nk-home { --nk-ink:#f4f5fb; --nk-muted:#a8afc2; --nk-line:#2a3044; --nk-card:#161b2d; --nk-soft:#0f1322; }
+
+  .nk-hero { position:relative; overflow:hidden; padding:76px 0 64px; background:radial-gradient(circle at 5% 10%,rgba(84,87,232,.14),transparent 34%),radial-gradient(circle at 75% 85%,rgba(12,168,141,.1),transparent 28%),var(--nk-card); }
+  .nk-hero::before { content:""; position:absolute; width:420px; height:420px; top:-260px; right:18%; border-radius:50%; background:rgba(84,87,232,.1); filter:blur(60px); pointer-events:none; }
+  .nk-hero-copy { position:relative; z-index:2; max-width:720px; }
+  .nk-kicker { display:inline-flex; align-items:center; gap:8px; margin-bottom:18px; padding:7px 11px; border:1px solid color-mix(in srgb,var(--nk-primary) 22%,var(--nk-line)); border-radius:50rem; background:color-mix(in srgb,var(--nk-primary) 7%,var(--nk-card)); color:var(--nk-primary); font-size:.68rem; font-weight:800; letter-spacing:.04em; }
+  .nk-kicker i { color:var(--nk-teal); }
+  .nk-hero h1 { margin:0 0 19px; color:var(--nk-ink); font-size:clamp(3.15rem,5.5vw,5.25rem); line-height:1.05; letter-spacing:-.06em; font-weight:800; }
+  .nk-hero h1 span { color:var(--nk-primary); }
+  .nk-lead { max-width:650px; margin:0; color:var(--nk-muted); font-size:1rem; line-height:1.85; }
+
+  .nk-search { position:relative; z-index:3; display:grid; grid-template-columns:1fr .85fr auto; margin-top:29px; padding:7px; border:1px solid var(--nk-line); border-radius:17px; background:var(--nk-card); box-shadow:0 20px 55px rgba(28,35,77,.13); }
+  .nk-search-field { min-width:0; min-height:62px; display:flex; align-items:center; gap:12px; padding:7px 15px; border-right:1px solid var(--nk-line); }
+  .nk-search-field > i { color:var(--nk-primary); font-size:1.08rem; }
+  .nk-search-field > div { min-width:0; flex:1; display:grid; }
+  .nk-search-field label { margin:0; color:var(--nk-muted); font-size:.59rem; font-weight:800; letter-spacing:.05em; }
+  .nk-search-field input { width:100%; min-width:0; padding:0; border:0; outline:0; background:transparent; color:var(--nk-ink); font-size:.86rem; font-weight:700; }
+  .nk-search-field input::placeholder { color:color-mix(in srgb,var(--nk-muted) 76%,transparent); }
+  .nk-search-btn { min-width:122px; border:0; border-radius:12px; background:linear-gradient(135deg,var(--nk-primary),var(--nk-primary-dark)); color:#fff; font-size:.82rem; font-weight:800; box-shadow:0 10px 24px rgba(84,87,232,.24); }
+  .nk-search-btn:hover { color:#fff; background:var(--nk-primary-dark); transform:translateY(-1px); }
+  .nk-quick-links { display:flex; flex-wrap:wrap; gap:20px; margin-top:19px; }
+  .nk-quick-links a { display:inline-flex; align-items:center; gap:7px; color:var(--nk-muted); font-size:.75rem; font-weight:750; }
+  .nk-quick-links a:hover { color:var(--nk-primary); }
+  .nk-quick-links i { color:var(--nk-teal); }
+
+  .nk-video-card { position:relative; min-height:520px; overflow:hidden; border:1px solid var(--nk-line); border-radius:28px; background:#11172a; box-shadow:0 28px 65px rgba(23,29,65,.2); }
+  .nk-video-card video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; filter:saturate(.84) contrast(1.02); }
+  .nk-video-card::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg,transparent 45%,rgba(7,11,25,.78)); pointer-events:none; }
+  .nk-video-caption { position:absolute; z-index:2; left:20px; right:20px; bottom:20px; display:flex; align-items:center; gap:12px; padding:15px; border:1px solid rgba(255,255,255,.22); border-radius:16px; background:rgba(8,13,29,.7); color:#fff; backdrop-filter:blur(16px); }
+  .nk-video-caption > i { width:42px; height:42px; flex:0 0 42px; display:grid; place-items:center; border-radius:12px; background:rgba(96,226,195,.15); color:#78e6cc; font-size:1.15rem; }
+  .nk-video-caption span { display:grid; }
+  .nk-video-caption strong { font-size:.84rem; }
+  .nk-video-caption small { color:rgba(255,255,255,.66); font-size:.61rem; }
+  .nk-video-button { position:absolute; z-index:3; top:16px; right:16px; width:40px; height:40px; display:grid; place-items:center; border:1px solid rgba(255,255,255,.28); border-radius:50%; background:rgba(8,13,29,.62); color:#fff; backdrop-filter:blur(10px); }
+
+  .nk-stats-wrap { position:relative; z-index:4; margin-top:-28px; }
+  .nk-stats { overflow:hidden; border:1px solid var(--nk-line); border-radius:18px; background:var(--nk-card); box-shadow:0 14px 38px rgba(28,35,77,.1); }
+  .nk-stat { min-height:92px; display:flex; align-items:center; gap:11px; padding:19px; border-right:1px solid var(--nk-line); }
+  .nk-stat:last-child { border-right:0; }
+  .nk-stat > i { width:40px; height:40px; flex:0 0 40px; display:grid; place-items:center; border-radius:12px; background:color-mix(in srgb,var(--nk-primary) 9%,var(--nk-card)); color:var(--nk-primary); }
+  .nk-stat span { min-width:0; display:grid; }
+  .nk-stat strong { color:var(--nk-ink); font-size:.8rem; }
+  .nk-stat small { color:var(--nk-muted); font-size:.61rem; }
+
+  .nk-section { padding:82px 0; background:var(--nk-soft); }
+  .nk-section-white { background:var(--nk-card); }
+  .nk-section-title { max-width:690px; margin:0 auto 38px; text-align:center; }
+  .nk-overline { display:block; margin-bottom:7px; color:var(--nk-primary); font-size:.65rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
+  .nk-section-title h2,.nk-heading-row h2 { margin:0; color:var(--nk-ink); font-size:clamp(1.9rem,3.5vw,3rem); line-height:1.2; letter-spacing:-.045em; font-weight:800; }
+  .nk-section-title p { margin:12px 0 0; color:var(--nk-muted); font-size:.88rem; }
+  .nk-step { height:100%; padding:27px; border:1px solid var(--nk-line); border-radius:18px; background:var(--nk-card); transition:transform .2s ease,box-shadow .2s ease; }
+  .nk-step:hover { transform:translateY(-4px); box-shadow:0 14px 34px rgba(30,36,72,.09); }
+  .nk-step-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:21px; }
+  .nk-step-icon { width:49px; height:49px; display:grid; place-items:center; border-radius:14px; background:color-mix(in srgb,var(--nk-primary) 9%,var(--nk-card)); color:var(--nk-primary); font-size:1.14rem; }
+  .nk-step:nth-child(2) .nk-step-icon { background:color-mix(in srgb,var(--nk-teal) 11%,var(--nk-card)); color:var(--nk-teal); }
+  .nk-step-number { color:var(--nk-muted); font-size:.64rem; font-weight:800; letter-spacing:.08em; }
+  .nk-step h3 { margin:0 0 7px; color:var(--nk-ink); font-size:1.05rem; font-weight:800; }
+  .nk-step p { margin:0; color:var(--nk-muted); font-size:.78rem; }
+
+  .nk-heading-row { display:flex; align-items:end; justify-content:space-between; gap:20px; margin-bottom:30px; }
+  .nk-heading-link { white-space:nowrap; color:var(--nk-primary); font-size:.78rem; font-weight:800; }
+  .nk-category { height:100%; display:flex; align-items:center; gap:13px; padding:18px; border:1px solid var(--nk-line); border-radius:15px; background:var(--nk-card); color:var(--nk-ink); box-shadow:0 6px 18px rgba(30,36,72,.04); transition:.2s ease; }
+  .nk-category:hover { color:var(--nk-ink); border-color:color-mix(in srgb,var(--nk-primary) 42%,var(--nk-line)); transform:translateY(-3px); box-shadow:0 12px 28px rgba(30,36,72,.08); }
+  .nk-category > span { width:46px; height:46px; flex:0 0 46px; display:grid; place-items:center; border-radius:13px; background:color-mix(in srgb,var(--nk-primary) 8%,var(--nk-card)); font-size:1.35rem; }
+  .nk-category > div { min-width:0; flex:1; display:grid; }
+  .nk-category b { overflow:hidden; color:var(--nk-ink); font-size:.81rem; text-overflow:ellipsis; white-space:nowrap; }
+  .nk-category small { color:var(--nk-muted); font-size:.61rem; }
+  .nk-category > i { color:var(--nk-muted); }
+
+  .nk-job-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .nk-home .job-card { padding:22px; border:1px solid var(--nk-line); border-radius:18px; background:var(--nk-card); color:var(--nk-ink); box-shadow:0 8px 24px rgba(30,36,72,.05); transform:none; }
+  .nk-home .job-card:hover { transform:translateY(-3px); border-color:color-mix(in srgb,var(--nk-primary) 38%,var(--nk-line)); box-shadow:0 14px 32px rgba(30,36,72,.09); }
+  .nk-home .job-card::before { display:none; }
+  .nk-home .job-card h3 a,.nk-home .job-card .job-card-footer a { color:var(--nk-ink); }
+  .nk-home .job-card .company-name,.nk-home .job-card .job-meta,.nk-home .job-card .job-card-footer { color:var(--nk-muted); }
+
+  .nk-safety { padding:72px 0; color:#fff; background:linear-gradient(120deg,#31368d,#1c2457 58%,#173a42); }
+  .nk-safety .nk-overline { color:#8cebd3; }
+  .nk-safety h2 { margin:0 0 12px; color:#fff; font-size:clamp(2rem,4vw,3.5rem); letter-spacing:-.05em; font-weight:800; }
+  .nk-safety p { max-width:650px; color:rgba(255,255,255,.7); }
+  .nk-shield { width:140px; height:140px; display:grid; place-items:center; border:1px solid rgba(255,255,255,.18); border-radius:38px; background:rgba(255,255,255,.08); color:#85ead2; font-size:3.7rem; }
+  .nk-cta { padding:70px 0; background:var(--nk-soft); }
+  .nk-cta-card { display:flex; align-items:center; justify-content:space-between; gap:28px; padding:35px 38px; border:1px solid var(--nk-line); border-radius:22px; background:var(--nk-card); box-shadow:0 12px 35px rgba(30,36,72,.06); }
+  .nk-cta-card h2 { margin:0 0 6px; color:var(--nk-ink); font-size:clamp(1.7rem,3vw,2.6rem); letter-spacing:-.04em; font-weight:800; }
+  .nk-cta-card p { margin:0; color:var(--nk-muted); }
+
+  @media (max-width:991.98px) {
+    .nk-hero { padding-top:58px; }
+    .nk-video-card { min-height:390px; margin-top:20px; }
+    .nk-stat { border-bottom:1px solid var(--nk-line); }
+    .nk-stats .row > div:nth-child(2) .nk-stat { border-right:0; }
+    .nk-stats .row > div:nth-last-child(-n+2) .nk-stat { border-bottom:0; }
+    .nk-job-grid { grid-template-columns:1fr; }
+  }
+
+  @media (max-width:767.98px) {
+    .nk-hero { padding:43px 0 48px; }
+    .nk-hero h1 { font-size:clamp(2.55rem,12vw,3.35rem); letter-spacing:-.045em; }
+    .nk-lead { font-size:.88rem; line-height:1.72; }
+    .nk-search { grid-template-columns:1fr; margin-top:23px; }
+    .nk-search-field { min-height:57px; border-right:0; border-bottom:1px solid var(--nk-line); }
+    .nk-search-btn { min-height:51px; }
+    .nk-video-card { min-height:280px; border-radius:20px; }
+    .nk-video-caption { left:12px; right:12px; bottom:12px; }
+    .nk-stats-wrap { margin-top:0; }
+    .nk-stat { min-height:84px; padding:14px 10px; }
+    .nk-stat > i { width:35px; height:35px; flex-basis:35px; }
+    .nk-section { padding:60px 0; }
+    .nk-section-title { margin-bottom:26px; text-align:left; }
+    .nk-section-title h2 { font-size:2rem; }
+    .nk-step { padding:21px; }
+    .nk-heading-row { align-items:flex-start; }
+    .nk-heading-row h2 { font-size:2rem; }
+    .nk-heading-link { padding-top:6px; font-size:.7rem; }
+    .nk-shield { display:none; }
+    .nk-cta-card { align-items:flex-start; flex-direction:column; padding:27px; }
+    .nk-cta-card .btn { width:100%; }
+  }
+
+  @media (max-width:430px) {
+    .premium-header .nav-wrap { position:relative; min-width:0; }
+    .premium-header .brand { max-width:calc(100% - 90px); }
+    .premium-header .nav-actions { position:absolute; right:0; top:50%; transform:translateY(-50%); }
+    .nk-kicker { font-size:.57rem; }
+    .nk-hero h1 { font-size:2.72rem; }
+    .nk-quick-links { gap:14px; }
+    .nk-video-card { min-height:245px; }
+    .nk-video-caption strong { font-size:.76rem; }
+    .nk-video-caption small { font-size:.56rem; }
+    .nk-stat { gap:7px; }
+    .nk-stat strong { font-size:.69rem; }
+    .nk-stat small { font-size:.54rem; }
+  }
+
+  @media (prefers-reduced-motion:reduce) {
+    .nk-video-card video { display:none; }
+    .nk-video-card { background:url("{% static 'media/hero-motivation-poster.webp' %}") center/cover no-repeat; }
+    .nk-step,.nk-category,.nk-home .job-card { transition:none; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="nk-home">
+  <section class="nk-hero" data-nk-hero>
+    <div class="container">
+      <div class="row g-5 align-items-center">
+        <div class="col-lg-7">
+          <div class="nk-hero-copy">
+            <div class="nk-kicker"><i class="bi bi-patch-check-fill"></i> ಕರ್ನಾಟಕದ ವಿಶ್ವಾಸಾರ್ಹ ಉದ್ಯೋಗ ವೇದಿಕೆ</div>
+            <h1>ನಿಮ್ಮ ಹತ್ತಿರದ<br><span>ಸರಿಯಾದ ಕೆಲಸ.</span></h1>
+            <p class="nk-lead">Verified employers, ಸ್ಪಷ್ಟ salary ಮತ್ತು ಕನ್ನಡದಲ್ಲೇ ಸುಲಭ application. ನಿಮ್ಮ ಮುಂದಿನ ಅವಕಾಶವನ್ನು ಇಂದೇ ಹುಡುಕಿ.</p>
+            <form class="nk-search" action="{% url 'jobs:list' %}" method="get">
+              <div class="nk-search-field"><i class="bi bi-search"></i><div><label for="hero-q">ಯಾವ ಕೆಲಸ?</label><input id="hero-q" name="q" placeholder="Job title ಅಥವಾ skill"></div></div>
+              <div class="nk-search-field"><i class="bi bi-geo-alt"></i><div><label for="hero-city">ಯಾವ ಊರು?</label><input id="hero-city" name="city" placeholder="City ಅಥವಾ area"></div></div>
+              <button class="btn nk-search-btn" type="submit">{{ ui.search }} <i class="bi bi-arrow-right ms-1"></i></button>
+            </form>
+            <div class="nk-quick-links"><a href="{% url 'jobs:list' %}"><i class="bi bi-briefcase"></i> ಎಲ್ಲಾ jobs ನೋಡಿ</a><a href="{% url 'jobs:create' %}"><i class="bi bi-plus-circle"></i> Job post ಮಾಡಿ</a></div>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="nk-video-card">
+            <video id="hero-video" autoplay muted loop playsinline preload="metadata" poster="{% static 'media/hero-motivation-poster.webp' %}">
+              <source media="(max-width:700px)" src="{% static 'media/hero-motivation-mobile.mp4' %}" type="video/mp4">
+              <source src="{% static 'media/hero-motivation-desktop.mp4' %}" type="video/mp4">
+            </video>
+            <button class="nk-video-button" id="video-control" type="button" aria-label="Pause background video"><i class="bi bi-pause-fill"></i></button>
+            <div class="nk-video-caption"><i class="bi bi-shield-check"></i><span><strong>ಅಭ್ಯರ್ಥಿಗಳಿಗೆ application ಉಚಿತ</strong><small>ಯಾವುದೇ jobಗಾಗಿ payment ಮಾಡಬೇಡಿ</small></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="nk-stats-wrap">
+    <div class="container">
+      <div class="nk-stats"><div class="row g-0 row-cols-2 row-cols-lg-4">
+        <div class="col"><div class="nk-stat"><i class="bi bi-building-check"></i><span><strong>{{ stats.employers }} Employers</strong><small>ಸ್ಥಳೀಯ hiring</small></span></div></div>
+        <div class="col"><div class="nk-stat"><i class="bi bi-briefcase"></i><span><strong>{{ stats.jobs }} Active jobs</strong><small>ಹೊಸ ಅವಕಾಶಗಳು</small></span></div></div>
+        <div class="col"><div class="nk-stat"><i class="bi bi-translate"></i><span><strong>ಕನ್ನಡ + English</strong><small>ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ</small></span></div></div>
+        <div class="col"><div class="nk-stat"><i class="bi bi-currency-rupee"></i><span><strong>100% Free</strong><small>Candidate apply</small></span></div></div>
+      </div></div>
+    </div>
+  </div>
+
+  <section class="nk-section">
+    <div class="container">
+      <div class="nk-section-title"><span class="nk-overline">ಸರಳವಾದ ಪ್ರಕ್ರಿಯೆ</span><h2>ಮೂರು ಹಂತಗಳಲ್ಲಿ ನಿಮ್ಮ application</h2><p>Mobileನಲ್ಲೇ profile ಸಿದ್ಧಪಡಿಸಿ ಮತ್ತು ಸರಿಯಾದ ಅವಕಾಶಕ್ಕೆ apply ಮಾಡಿ.</p></div>
+      <div class="row g-3">
+        <div class="col-md-4"><article class="nk-step"><div class="nk-step-top"><span class="nk-step-icon"><i class="bi bi-search"></i></span><span class="nk-step-number">01</span></div><h3>ಕೆಲಸ ಹುಡುಕಿ</h3><p>Skill, city ಮತ್ತು salary ಆಧಾರದಲ್ಲಿ ಸರಿಯಾದ job ಹುಡುಕಿ.</p></article></div>
+        <div class="col-md-4"><article class="nk-step"><div class="nk-step-top"><span class="nk-step-icon"><i class="bi bi-person-vcard"></i></span><span class="nk-step-number">02</span></div><h3>Profile ಸಿದ್ಧಪಡಿಸಿ</h3><p>Email ಮೂಲಕ login ಮಾಡಿ ಮತ್ತು resume upload ಮಾಡಿ.</p></article></div>
+        <div class="col-md-4"><article class="nk-step"><div class="nk-step-top"><span class="nk-step-icon"><i class="bi bi-send-check"></i></span><span class="nk-step-number">03</span></div><h3>Apply ಮಾಡಿ</h3><p>Application status ಅನ್ನು ನಿಮ್ಮ dashboardನಲ್ಲಿ track ಮಾಡಿ.</p></article></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="nk-section nk-section-white">
+    <div class="container">
+      <div class="nk-heading-row"><div><span class="nk-overline">Category ಮೂಲಕ ಹುಡುಕಿ</span><h2>ನಿಮ್ಮ skillಗೆ ಸೂಕ್ತವಾದ ಕೆಲಸ</h2></div><a class="nk-heading-link" href="{% url 'jobs:list' %}">ಎಲ್ಲಾ jobs <i class="bi bi-arrow-right"></i></a></div>
+      <div class="row g-3">
+        {% for category in categories %}<div class="col-12 col-sm-6 col-lg-3"><a class="nk-category" href="{% url 'jobs:list' %}?category={{ category.slug }}"><span>{{ category.icon }}</span><div><b>{% if lang == 'kn' %}{{ category.name_kn }}{% else %}{{ category.name_en }}{% endif %}</b><small>{{ category.job_count }} opportunities</small></div><i class="bi bi-chevron-right"></i></a></div>{% empty %}<div class="col-12"><p class="text-secondary">Categories will appear here after setup.</p></div>{% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section class="nk-section">
+    <div class="container">
+      <div class="nk-heading-row"><div><span class="nk-overline">ಇತ್ತೀಚಿನ ಅವಕಾಶಗಳು</span><h2>ಹೊಸದಾಗಿ ಪ್ರಕಟಿಸಿದ ಉದ್ಯೋಗಗಳು</h2></div><a class="nk-heading-link" href="{% url 'jobs:list' %}">View all <i class="bi bi-arrow-right"></i></a></div>
+      <div class="nk-job-grid">{% for job in jobs %}{% include 'partials/job_card.html' %}{% empty %}<div class="empty-state"><span>💼</span><h3>ಇನ್ನೂ ಉದ್ಯೋಗಗಳಿಲ್ಲ</h3><p>ಹೊಸ verified jobs ಶೀಘ್ರದಲ್ಲೇ ಇಲ್ಲಿ ಕಾಣಿಸುತ್ತವೆ.</p></div>{% endfor %}</div>
+    </div>
+  </section>
+
+  <section class="nk-safety">
+    <div class="container"><div class="row align-items-center g-4"><div class="col-lg-8"><span class="nk-overline">Safety first</span><h2>ಕೆಲಸ ಪಡೆಯಲು ಹಣ ಕೊಡಬೇಡಿ.</h2><p>ಅಭ್ಯರ್ಥಿಗಳಿಗೆ application ಯಾವಾಗಲೂ free. Suspicious job ಕಂಡರೆ ತಕ್ಷಣ report ಮಾಡಿ.</p><a class="btn btn-light fw-bold" href="{% url 'jobs:static_page' 'safety' %}">Safety guide <i class="bi bi-arrow-right ms-1"></i></a></div><div class="col-lg-4 d-flex justify-content-lg-end"><div class="nk-shield"><i class="bi bi-shield-check"></i></div></div></div></div>
+  </section>
+
+  <section class="nk-cta"><div class="container"><div class="nk-cta-card"><div><span class="nk-overline">Employers</span><h2>ಸರಿಯಾದ local talent ಹುಡುಕುತ್ತಿದ್ದೀರಾ?</h2><p>ಕೆಲವೇ ನಿಮಿಷಗಳಲ್ಲಿ ನಿಮ್ಮ job post ಮಾಡಿ.</p></div><a class="btn btn-primary btn-lg fw-bold" href="{% url 'jobs:create' %}">{{ ui.post_job }} <i class="bi bi-arrow-right ms-1"></i></a></div></div></section>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(()=>{
+  const hero=document.querySelector('[data-nk-hero]'),video=document.getElementById('hero-video'),button=document.getElementById('video-control');
+  if(!hero||!video||!button)return;
+  const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches,saveData=navigator.connection&&navigator.connection.saveData;
+  const sync=()=>{button.innerHTML=video.paused?'<i class="bi bi-play-fill"></i>':'<i class="bi bi-pause-fill"></i>';button.setAttribute('aria-label',video.paused?'Play background video':'Pause background video')};
+  if(reduce||saveData){video.pause();video.removeAttribute('autoplay');button.hidden=reduce}else video.play().catch(sync);
+  button.addEventListener('click',()=>{video.paused?video.play():video.pause();sync()});
+  video.addEventListener('play',sync);video.addEventListener('pause',sync);
+  if('IntersectionObserver'in window)new IntersectionObserver(([entry])=>{if(!entry.isIntersecting)video.pause();else if(!reduce&&!saveData)video.play().catch(()=>{})},{threshold:.15}).observe(hero);
+})();
+</script>
+{% endblock %}

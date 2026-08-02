@@ -1,0 +1,8 @@
+{% extends 'base.html' %}{% load static %}
+{% block title %}Email login — {{ ui.brand }}{% endblock %}
+{% block content %}
+<section class="auth-section"><div class="container auth-media-shell">
+  <div class="auth-visual-panel"><img src="{% static 'media/hero-workforce.png' %}" alt="Indian professionals in a modern workplace"><div class="auth-visual-copy"><span class="live-badge tw-inline-flex tw-items-center tw-gap-2 tw-rounded-full"><span></span> JOIN THE NETWORK</span><h1>ನಿಮ್ಮ ಮುಂದಿನ<br>ಅವಕಾಶ ಇಲ್ಲಿದೆ.</h1><p>Verified local jobs. Transparent salaries. Zero candidate fees.</p></div></div>
+  <div class="auth-form-side"><form class="auth-card" method="post">{% csrf_token %}<div class="email-icon"><i class="bi bi-envelope-paper"></i></div><span class="eyebrow">PASSWORDLESS ACCESS</span><h2>Email ಮೂಲಕ login ಮಾಡಿ</h2><p>ನಿಮ್ಮ emailಗೆ 6-digit secure code ಕಳುಹಿಸುತ್ತೇವೆ. Password ಅಗತ್ಯವಿಲ್ಲ.</p>{% include 'partials/form_fields.html' %}<button class="btn btn-primary btn-block btn-large" type="submit">Email code ಕಳುಹಿಸಿ <i class="bi bi-arrow-right"></i></button><div class="secure-note"><i class="bi bi-shield-lock"></i><span>Code expires in 5 minutes · Secured by Resend</span></div><small>ಮುಂದುವರಿದರೆ ನಮ್ಮ <a href="{% url 'jobs:static_page' 'terms' %}">ನಿಯಮಗಳಿಗೆ</a> ಒಪ್ಪುತ್ತೀರಿ.</small></form></div>
+</div></section>
+{% endblock %}

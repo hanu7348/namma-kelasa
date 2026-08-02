@@ -1,0 +1,32 @@
+name: Bug report
+description: Report reproducible broken behaviour
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: "Thanks for reporting a problem. Do not include credentials or personal data."
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      placeholder: "1. Open…\n2. Select…\n3. Observe…"
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and device
+      placeholder: "Edge 130, Android 14"
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Safe logs or screenshots
+      description: Remove email addresses, OTPs, API keys, résumés, and payment information.

@@ -1,0 +1,15 @@
+<article class="job-card {% if job.is_featured %}featured{% endif %}">
+  <div class="job-card-top">
+    <div class="company-logo">{{ job.employer.company_name|first|upper }}</div>
+    <div class="job-card-heading">
+      <div class="badges">
+        {% if job.is_urgent %}<span class="badge badge-warm">{{ ui.urgent }}</span>{% endif %}
+        {% if job.is_featured %}<span class="badge badge-blue">{{ ui.featured }}</span>{% endif %}
+      </div>
+      <h3><a href="{{ job.get_absolute_url }}">{% if lang == 'kn' %}{{ job.title_kn }}{% else %}{{ job.title_en }}{% endif %}</a></h3>
+      <p class="company-name">{{ job.employer.company_name }} {% if job.employer.is_verified %}<span class="verified" title="Verified employer">✓</span>{% endif %}</p>
+    </div>
+  </div>
+  <div class="job-meta"><span>📍 {{ job.location }}</span><span>💼 {{ job.get_job_type_display }}</span><span>₹ {{ job.salary_min }}–{{ job.salary_max }} / {{ job.get_salary_period_display }}</span></div>
+  <div class="job-card-footer"><span>{{ job.created_at|timesince }} ago</span><a href="{{ job.get_absolute_url }}">{% if lang == 'kn' %}ವಿವರ ನೋಡಿ →{% else %}View details →{% endif %}</a></div>
+</article>
